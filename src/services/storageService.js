@@ -11,7 +11,7 @@ export async function uploadFile(file) {
   const result = await storage.createFile(
     ATTACHMENTS_BUCKET_ID,
     ID.unique(),
-    file
+    file,
   );
   return result.$id;
 }

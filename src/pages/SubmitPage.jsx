@@ -32,7 +32,9 @@ export function SubmitPage() {
           attachments = await uploadFiles(formData.files);
         } catch (uploadErr) {
           console.error("File upload failed:", uploadErr);
-          throw new Error("Evidence upload failed. Secure transfer interrupted.");
+          throw new Error(
+            "Evidence upload failed. Secure transfer interrupted.",
+          );
         }
       }
 

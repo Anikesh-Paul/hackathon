@@ -7,7 +7,12 @@ import { DATABASE_ID, COMPLAINTS_COLLECTION_ID } from "../config";
  * @param {{title: string, description: string, category?: string, attachments?: string[]}} data
  * @returns {Promise<{trackingId: string}>}
  */
-export async function createComplaint({ title, description, category, attachments }) {
+export async function createComplaint({
+  title,
+  description,
+  category,
+  attachments,
+}) {
   const trackingId = crypto.randomUUID();
   const now = new Date().toISOString();
 
