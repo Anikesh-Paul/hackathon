@@ -4,27 +4,34 @@ import { DATABASE_ID, COMPLAINTS_COLLECTION_ID } from "../config";
 
 /**
  * Create a new complaint (anonymous)
- * @param {{title: string, description: string, category?: string}} data
+ * @param {{title: string, description: string, category?: string, attachments?: string[]}} data
  * @returns {Promise<{trackingId: string}>}
  */
-export async function createComplaint({ title, description, category }) {
+export async function createComplaint({ title, description, category, attachments }) {
   const trackingId = crypto.randomUUID();
   const now = new Date().toISOString();
+
+  const documentData = {
+    trackingId,
+    title,
+    description,
+    category: category || null,
+    status: "pending",
+    adminNotes: null,
+    createdAt: now,
+    updatedAt: null,
+  };
+
+  // Only include attachments if provided
+  if (attachments && attachments.length > 0) {
+    documentData.attachments = attachments;
+  }
 
   await databases.createDocument(
     DATABASE_ID,
     COMPLAINTS_COLLECTION_ID,
     ID.unique(),
-    {
-      trackingId,
-      title,
-      description,
-      category: category || null,
-      status: "pending",
-      adminNotes: null,
-      createdAt: now,
-      updatedAt: null,
-    },
+    documentData,
   );
 
   return { trackingId };
@@ -107,6 +114,7 @@ function mapDocument(doc) {
     category: doc.category,
     status: doc.status,
     adminNotes: doc.adminNotes,
+    attachments: doc.attachments || [],
     createdAt: doc.createdAt,
     updatedAt: doc.updatedAt,
   };

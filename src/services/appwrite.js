@@ -1,4 +1,4 @@
-import { Client, Account, Databases } from "appwrite";
+import { Client, Account, Databases, Storage } from "appwrite";
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID } from "../config";
 
 // Initialize Appwrite client
@@ -8,5 +8,6 @@ client.setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT_ID);
 // Export service instances
 export const account = new Account(client);
 export const databases = new Databases(client);
+export const storage = new Storage(client);
 
 export default client;

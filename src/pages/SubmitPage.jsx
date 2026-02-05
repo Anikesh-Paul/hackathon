@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ComplaintForm } from "../components/ComplaintForm";
 import { createComplaint } from "../services/complaintService";
+import { uploadFiles } from "../services/storageService";
 
 export function SubmitPage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
   const [error, setError] = useState(null);
 
   async function handleSubmit(formData) {
@@ -13,6 +15,7 @@ export function SubmitPage() {
 
     setIsSubmitting(true);
     setError(null);
+    setUploadProgress("");
 
     try {
       // Validate payload structure one last time
@@ -20,10 +23,26 @@ export function SubmitPage() {
         throw new Error("Incomplete transmission packets. Verify all fields.");
       }
 
+      let attachments = [];
+
+      // Upload images if any were selected
+      if (formData.files && formData.files.length > 0) {
+        setUploadProgress(`Uploading ${formData.files.length} file(s)...`);
+        try {
+          attachments = await uploadFiles(formData.files);
+        } catch (uploadErr) {
+          console.error("File upload failed:", uploadErr);
+          throw new Error("Evidence upload failed. Secure transfer interrupted.");
+        }
+      }
+
+      setUploadProgress("Encrypting payload...");
+
       const { trackingId } = await createComplaint({
         title: formData.title,
         description: formData.description,
         category: formData.category,
+        attachments: attachments.length > 0 ? attachments : undefined,
       });
 
       navigate(`/confirmation/${trackingId}`);
@@ -72,6 +91,31 @@ export function SubmitPage() {
               />
             </svg>
             <p className="font-semibold text-sm">{error}</p>
+          </div>
+        )}
+
+        {uploadProgress && (
+          <div className="mb-8 p-4 bg-blue-50 border border-blue-100 text-blue-700 rounded-2xl flex items-center shadow-sm">
+            <svg
+              className="animate-spin w-5 h-5 mr-3 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <p className="font-semibold text-sm">{uploadProgress}</p>
           </div>
         )}
 

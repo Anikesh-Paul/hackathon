@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StatusBadge } from "./StatusBadge";
+import { getFilePreviewUrl, getFileViewUrl } from "../services/storageService";
 
 const STATUS_OPTIONS = ["pending", "reviewing", "resolved", "dismissed"];
 
@@ -117,6 +118,64 @@ export function ComplaintCard({ complaint, onStatusChange, onNoteAdd }) {
                   </p>
                 </div>
               </div>
+
+              {/* Attachments Section - Admin Only */}
+              {complaint.attachments && complaint.attachments.length > 0 && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center">
+                      <svg
+                        className="w-4 h-4 text-amber-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2.5"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">
+                      Evidence Attachments ({complaint.attachments.length})
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {complaint.attachments.map((fileId, index) => (
+                      <a
+                        key={fileId}
+                        href={getFileViewUrl(fileId)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border-2 border-slate-200 hover:border-red-600 transition-colors"
+                      >
+                        <img
+                          src={getFilePreviewUrl(fileId)}
+                          alt={`Attachment ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/60 transition-colors flex items-center justify-center">
+                          <svg
+                            className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="p-8 border-2 border-dashed border-slate-100 rounded-[2rem] space-y-4">
                 <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">
