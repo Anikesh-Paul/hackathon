@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ComplaintForm } from '../components/ComplaintForm';
-import { createComplaint } from '../services/complaintService';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ComplaintForm } from "../components/ComplaintForm";
+import { createComplaint } from "../services/complaintService";
 
 export function SubmitPage() {
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ export function SubmitPage() {
       const { trackingId } = await createComplaint(formData);
       navigate(`/confirmation/${trackingId}`);
     } catch (err) {
-      console.error('Submission failed:', err);
-      setError('Failed to submit complaint. Please try again.');
+      console.error("Submission failed:", err);
+      setError("Failed to submit complaint. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

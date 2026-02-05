@@ -1,5 +1,9 @@
-import { createContext, useState, useEffect } from 'react';
-import { getCurrentUser, login as authLogin, logout as authLogout } from '../services/authService';
+import { createContext, useState, useEffect } from "react";
+import {
+  getCurrentUser,
+  login as authLogin,
+  logout as authLogout,
+} from "../services/authService";
 
 export const AuthContext = createContext(null);
 
@@ -41,9 +45,5 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,6 +1,6 @@
-import { ID, Query } from 'appwrite';
-import { databases } from './appwrite';
-import { DATABASE_ID, COMPLAINTS_COLLECTION_ID } from '../config';
+import { ID, Query } from "appwrite";
+import { databases } from "./appwrite";
+import { DATABASE_ID, COMPLAINTS_COLLECTION_ID } from "../config";
 
 /**
  * Create a new complaint (anonymous)
@@ -20,11 +20,11 @@ export async function createComplaint({ title, description, category }) {
       title,
       description,
       category: category || null,
-      status: 'pending',
+      status: "pending",
       adminNotes: null,
       createdAt: now,
       updatedAt: null,
-    }
+    },
   );
 
   return { trackingId };
@@ -39,7 +39,7 @@ export async function getComplaintByTrackingId(trackingId) {
   const response = await databases.listDocuments(
     DATABASE_ID,
     COMPLAINTS_COLLECTION_ID,
-    [Query.equal('trackingId', trackingId), Query.limit(1)]
+    [Query.equal("trackingId", trackingId), Query.limit(1)],
   );
 
   if (response.documents.length === 0) {
@@ -55,17 +55,17 @@ export async function getComplaintByTrackingId(trackingId) {
  * @returns {Promise<object[]>}
  */
 export async function listComplaints(filters = {}) {
-  const queries = [Query.orderDesc('createdAt')];
+  const queries = [Query.orderDesc("createdAt")];
 
   // Apply optional status filter
   if (filters.status) {
-    queries.push(Query.equal('status', filters.status));
+    queries.push(Query.equal("status", filters.status));
   }
 
   const response = await databases.listDocuments(
     DATABASE_ID,
     COMPLAINTS_COLLECTION_ID,
-    queries
+    queries,
   );
 
   return response.documents.map(mapDocument);
@@ -78,15 +78,10 @@ export async function listComplaints(filters = {}) {
  * @returns {Promise<void>}
  */
 export async function updateComplaintStatus(id, status) {
-  await databases.updateDocument(
-    DATABASE_ID,
-    COMPLAINTS_COLLECTION_ID,
-    id,
-    {
-      status,
-      updatedAt: new Date().toISOString(),
-    }
-  );
+  await databases.updateDocument(DATABASE_ID, COMPLAINTS_COLLECTION_ID, id, {
+    status,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 /**
@@ -96,15 +91,10 @@ export async function updateComplaintStatus(id, status) {
  * @returns {Promise<void>}
  */
 export async function addAdminNote(id, note) {
-  await databases.updateDocument(
-    DATABASE_ID,
-    COMPLAINTS_COLLECTION_ID,
-    id,
-    {
-      adminNotes: note,
-      updatedAt: new Date().toISOString(),
-    }
-  );
+  await databases.updateDocument(DATABASE_ID, COMPLAINTS_COLLECTION_ID, id, {
+    adminNotes: note,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 // Map Appwrite document to Complaint model

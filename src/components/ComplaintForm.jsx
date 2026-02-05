@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-const CATEGORIES = ['harassment', 'fraud', 'safety', 'misconduct', 'other'];
+const CATEGORIES = ["harassment", "fraud", "safety", "misconduct", "other"];
 
 export function ComplaintForm({ onSubmit, isSubmitting }) {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
+    title: "",
+    description: "",
+    category: "",
   });
 
   function handleChange(e) {
@@ -22,7 +22,10 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700"
+        >
           Title
         </label>
         <input
@@ -39,7 +42,10 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
       </div>
 
       <div>
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700"
+        >
           Category (optional)
         </label>
         <select
@@ -59,7 +65,10 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700"
+        >
           Description
         </label>
         <textarea
@@ -80,7 +89,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
         disabled={isSubmitting}
         className="w-full bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {isSubmitting ? 'Submitting...' : 'Submit Complaint'}
+        {isSubmitting ? "Submitting..." : "Submit Complaint"}
       </button>
     </form>
   );

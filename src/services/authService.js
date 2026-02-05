@@ -1,4 +1,4 @@
-import { account } from './appwrite';
+import { account } from "./appwrite";
 
 /**
  * Admin login
@@ -15,7 +15,7 @@ export async function login(email, password) {
  * @returns {Promise<void>}
  */
 export async function logout() {
-  await account.deleteSession('current');
+  await account.deleteSession("current");
 }
 
 /**

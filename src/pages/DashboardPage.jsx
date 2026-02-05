@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { ComplaintList } from '../components/ComplaintList';
-import { listComplaints, updateComplaintStatus, addAdminNote } from '../services/complaintService';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { ComplaintList } from "../components/ComplaintList";
+import {
+  listComplaints,
+  updateComplaintStatus,
+  addAdminNote,
+} from "../services/complaintService";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -20,8 +24,8 @@ export function DashboardPage() {
       const data = await listComplaints();
       setComplaints(data);
     } catch (err) {
-      console.error('Failed to load complaints:', err);
-      setError('Failed to load complaints.');
+      console.error("Failed to load complaints:", err);
+      setError("Failed to load complaints.");
     } finally {
       setLoading(false);
     }
@@ -30,20 +34,20 @@ export function DashboardPage() {
   async function handleStatusChange(id, status) {
     await updateComplaintStatus(id, status);
     setComplaints((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, status } : c))
+      prev.map((c) => (c.id === id ? { ...c, status } : c)),
     );
   }
 
   async function handleNoteAdd(id, note) {
     await addAdminNote(id, note);
     setComplaints((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, adminNotes: note } : c))
+      prev.map((c) => (c.id === id ? { ...c, adminNotes: note } : c)),
     );
   }
 
   async function handleLogout() {
     await logout();
-    navigate('/login');
+    navigate("/login");
   }
 
   return (
@@ -66,7 +70,9 @@ export function DashboardPage() {
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold">All Complaints</h2>
-          <span className="text-sm text-gray-500">{complaints.length} total</span>
+          <span className="text-sm text-gray-500">
+            {complaints.length} total
+          </span>
         </div>
 
         {error && (

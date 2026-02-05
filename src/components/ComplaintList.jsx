@@ -1,4 +1,4 @@
-import { ComplaintCard } from './ComplaintCard';
+import { ComplaintCard } from "./ComplaintCard";
 
 export function ComplaintList({ complaints, onStatusChange, onNoteAdd }) {
   if (complaints.length === 0) {
