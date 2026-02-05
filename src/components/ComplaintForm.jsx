@@ -18,14 +18,16 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    
+
     // UI-side validation
     const trimmedTitle = formData.title.trim();
     const trimmedDescription = formData.description.trim();
     const selectedCategory = formData.category;
 
     if (!trimmedTitle || !trimmedDescription || !selectedCategory) {
-      setLocalError("All fields are required. Mission protocol must be complete.");
+      setLocalError(
+        "All fields are required. Mission protocol must be complete.",
+      );
       return;
     }
 
@@ -43,7 +45,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
     onSubmit({
       title: trimmedTitle,
       description: trimmedDescription,
-      category: selectedCategory
+      category: selectedCategory,
     });
   }
 
@@ -54,7 +56,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
           Validation Error: {localError}
         </div>
       )}
-      
+
       <div className="space-y-3">
         <label
           htmlFor="title"
@@ -93,7 +95,9 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
               onChange={handleChange}
               className="appearance-none block w-full rounded-2xl border-slate-100 bg-slate-50 shadow-inner focus:border-red-600 focus:ring-red-600 focus:bg-white transition-all duration-300 py-4 px-6 text-slate-900 font-medium cursor-pointer"
             >
-              <option value="" disabled>Choose Domain</option>
+              <option value="" disabled>
+                Choose Domain
+              </option>
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat.charAt(0).toUpperCase() + cat.slice(1)}

@@ -10,7 +10,7 @@ export function SubmitPage() {
 
   async function handleSubmit(formData) {
     if (isSubmitting) return;
-    
+
     setIsSubmitting(true);
     setError(null);
 
@@ -23,16 +23,16 @@ export function SubmitPage() {
       const { trackingId } = await createComplaint({
         title: formData.title,
         description: formData.description,
-        category: formData.category
+        category: formData.category,
       });
-      
+
       navigate(`/confirmation/${trackingId}`);
     } catch (err) {
       console.error("Submission failed:", err);
       setError(
-        err.message?.includes("Incomplete") 
-        ? err.message 
-        : "Failed to transmit signal. Encryption handshake failure or network instability. Please retry."
+        err.message?.includes("Incomplete")
+          ? err.message
+          : "Failed to transmit signal. Encryption handshake failure or network instability. Please retry.",
       );
     } finally {
       setIsSubmitting(false);

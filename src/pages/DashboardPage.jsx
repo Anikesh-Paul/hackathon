@@ -18,25 +18,25 @@ export function DashboardPage() {
   useEffect(() => {
     // Only fetch complaints after auth session is confirmed
     if (authLoading) {
-      console.log('[Dashboard] Waiting for auth...');
+      console.log("[Dashboard] Waiting for auth...");
       return;
     }
-    
+
     if (!user) {
-      console.log('[Dashboard] No user session');
+      console.log("[Dashboard] No user session");
       setLoading(false);
       return;
     }
 
-    console.log('[Dashboard] Auth confirmed for:', user.email);
+    console.log("[Dashboard] Auth confirmed for:", user.email);
     loadComplaints();
   }, [user, authLoading]);
 
   async function loadComplaints() {
     try {
-      console.log('[Dashboard] Fetching complaints...');
+      console.log("[Dashboard] Fetching complaints...");
       const data = await listComplaints();
-      console.log('[Dashboard] Loaded', data.length, 'complaints');
+      console.log("[Dashboard] Loaded", data.length, "complaints");
       setComplaints(data);
     } catch (err) {
       console.error("[Dashboard] Failed to load complaints:", err);
