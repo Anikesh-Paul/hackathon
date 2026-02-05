@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base form styling for inputs/selects */
+input,
+select,
+textarea {
+  @apply border border-gray-300 px-3 py-2;
+}
