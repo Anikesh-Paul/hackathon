@@ -242,17 +242,38 @@ export function TrackStatusPage() {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-6">
                   <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 relative group">
                     <div className="absolute top-4 right-4 text-slate-200 group-hover:text-red-600 transition-colors">
                       <svg
                         className="w-6 h-6"
-                        fill="currentColor"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path d="M13 3l-2 3H8V3H2v18h6v-3h2l2 3h6V3h-5zm-2 15H4V5h2v11h5v2zm7 0h-4l-2-3H9v-3h3l2 3h4V5h2v13z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        />
                       </svg>
                     </div>
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
+                      Reviewer Message
+                    </h3>
+                    {complaint.adminNotes ? (
+                      <p className="text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line">
+                        {complaint.adminNotes}
+                      </p>
+                    ) : (
+                      <p className="text-sm text-slate-400 font-medium leading-relaxed italic">
+                        No message from the reviewer yet.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100">
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
                       Investigator Protocol
                     </h3>
