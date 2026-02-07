@@ -21,28 +21,53 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
   }
 
   function handleFileChange(e) {
-    const files = Array.from(e.target.files || []);
+    const incomingFiles = Array.from(e.target.files || []);
     if (localError) setLocalError("");
 
-    // Validate number of files
-    if (files.length > MAX_FILES) {
-      setLocalError(`Maximum ${MAX_FILES} files allowed.`);
-      return;
-    }
+    const validNewFiles = [];
+    const rejectedDetails = [];
 
-    // Validate each file
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        setLocalError("Only image files are allowed.");
-        return;
+    for (const file of incomingFiles) {
+      const isImage = file.type.startsWith("image/");
+      const isPdf = file.type === "application/pdf";
+      const isAudio = file.type === "audio/mpeg";
+      const isVideo = file.type === "video/mp4";
+      
+      // Type Check
+      if (!isImage && !isPdf && !isAudio && !isVideo) {
+        rejectedDetails.push(`'${file.name}' (unsupported type)`);
+        continue;
       }
+
+      // Size Check
       if (file.size > MAX_FILE_SIZE) {
-        setLocalError("Each file must be under 5MB.");
-        return;
+        rejectedDetails.push(`'${file.name}' exceeds the 5MB limit`);
+        continue;
       }
+
+      validNewFiles.push(file);
     }
 
-    setSelectedFiles(files);
+    // Handle rejections first so the user knows why some files didn't appear
+    if (rejectedDetails.length > 0) {
+      setLocalError(`REJECTED: ${rejectedDetails.join(", ")}. Please upload smaller files (max 5MB) in supported formats.`);
+    }
+
+    // Check for total capacity
+    const totalPossible = selectedFiles.length + validNewFiles.length;
+    if (totalPossible > MAX_FILES) {
+      setLocalError(`Maximum ${MAX_FILES} files allowed. Some valid items were not added.`);
+      
+      const availableSpots = MAX_FILES - selectedFiles.length;
+      if (availableSpots > 0) {
+        setSelectedFiles(prev => [...prev, ...validNewFiles.slice(0, availableSpots)]);
+      }
+    } else if (validNewFiles.length > 0) {
+      setSelectedFiles(prev => [...prev, ...validNewFiles]);
+    }
+
+    // Clear input so same file can be selected again if removed
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   function removeFile(index) {
@@ -89,8 +114,11 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-10">
       {localError && (
-        <div className="p-4 bg-amber-50 border border-amber-100 text-amber-700 rounded-xl text-xs font-bold uppercase tracking-widest animate-shake">
-          Validation Error: {localError}
+        <div className="p-4 bg-red-50 border border-red-100 text-red-700 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] animate-shake flex items-center gap-3">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Protocol Breach: {localError}
         </div>
       )}
 
@@ -192,14 +220,14 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
         <label className="block text-xs font-bold text-slate-500 uppercase tracking-[0.2em]">
           Evidence Attachments{" "}
           <span className="text-slate-400 normal-case tracking-normal font-medium">
-            (Optional — up to {MAX_FILES} images)
+            (Optional — up to {MAX_FILES} images, PDFs, audio, or video)
           </span>
         </label>
         <div className="relative">
           <input
             type="file"
             ref={fileInputRef}
-            accept="image/*"
+            accept="image/*,.pdf,audio/mpeg,video/mp4"
             multiple
             onChange={handleFileChange}
             className="block w-full rounded-2xl border-slate-100 bg-slate-50 shadow-inner focus:border-red-600 focus:ring-red-600 focus:bg-white transition-all duration-300 py-4 px-6 text-slate-900 font-medium file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-slate-900 file:text-white file:cursor-pointer hover:file:bg-red-600 file:transition-colors"
@@ -207,50 +235,69 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
         </div>
         {selectedFiles.length > 0 && (
           <div className="flex flex-wrap gap-3 mt-4">
-            {selectedFiles.map((file, index) => (
-              <div
-                key={index}
-                className="relative group bg-slate-100 rounded-xl p-2 pr-8"
-              >
-                <div className="flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-slate-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span className="text-xs font-medium text-slate-700 max-w-32 truncate">
-                    {file.name}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeFile(index)}
-                  className="absolute top-1/2 right-2 -translate-y-1/2 w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
+            {selectedFiles.map((file, index) => {
+              const isPdf = file.type === "application/pdf";
+              const isAudio = file.type === "audio/mpeg";
+              const isVideo = file.type === "video/mp4";
+              let typeLabel = "IMG";
+              if (isPdf) typeLabel = "PDF";
+              if (isAudio) typeLabel = "MP3";
+              if (isVideo) typeLabel = "MP4";
+
+              return (
+                <div
+                  key={index}
+                  className="relative group bg-slate-100 rounded-xl p-2 pr-8 border border-slate-200"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <div className="flex items-center gap-2">
+                    {isPdf || isAudio || isVideo ? (
+                      <svg className={`w-4 h-4 ${isPdf ? 'text-red-600' : isAudio ? 'text-blue-600' : 'text-purple-600'}`} fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                      </svg>
+                    ) : (
+                      <svg
+                        className="w-4 h-4 text-slate-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    )}
+                    <span className="text-xs font-black uppercase tracking-widest text-slate-700 max-w-[120px] truncate">
+                      {file.name}
+                    </span>
+                    <span className="text-[8px] font-black uppercase tracking-tighter text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-100">
+                      {typeLabel}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeFile(index)}
+                    className="absolute top-1/2 right-2 -translate-y-1/2 w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition-colors cursor-pointer"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="3"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ))}
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="3"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

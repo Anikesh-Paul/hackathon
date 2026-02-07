@@ -1,14 +1,66 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 
 export function ConfirmationPage() {
   const { trackingId } = useParams();
+  const location = useLocation();
+  const recoveryPhrase = location.state?.recoveryPhrase || null;
   const [copied, setCopied] = useState(false);
+  const [phraseCopied, setPhraseCopied] = useState(false);
 
   function copyToClipboard() {
     navigator.clipboard.writeText(trackingId);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  function copyPhrase() {
+    if (recoveryPhrase) {
+      navigator.clipboard.writeText(recoveryPhrase);
+      setPhraseCopied(true);
+      setTimeout(() => setPhraseCopied(false), 2000);
+    }
+  }
+
+  function downloadCredentials() {
+    const timestamp = new Date().toLocaleString();
+    const lines = [
+      "══════════════════════════════════════════════",
+      "  WHISTLEBLOWER REPORT — SECURE CREDENTIALS  ",
+      "══════════════════════════════════════════════",
+      "",
+      `  Tracking ID:      ${trackingId}`,
+      recoveryPhrase ? `  Recovery Phrase:  ${recoveryPhrase}` : null,
+      `  Submitted At:     ${timestamp}`,
+      "",
+      "──────────────────────────────────────────────",
+      "  INSTRUCTIONS",
+      "──────────────────────────────────────────────",
+      "",
+      "  1. Use the Tracking ID to check your report status.",
+      "  2. If you lose the Tracking ID, use the Recovery",
+      "     Phrase to recover it on the tracking page.",
+      "  3. Both secrets are shown ONLY ONCE — save this file",
+      "     in a secure location (encrypted drive, password",
+      "     manager, or physical vault).",
+      "  4. Do NOT share these credentials with anyone unless",
+      "     you trust them completely.",
+      "",
+      "══════════════════════════════════════════════",
+      "  This file was generated automatically.",
+      "  Delete it once you have stored the credentials safely.",
+      "══════════════════════════════════════════════",
+    ].filter(Boolean).join("\n");
+
+    const blob = new Blob([lines], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `report-credentials-${trackingId.slice(0, 8)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -118,7 +170,58 @@ export function ConfirmationPage() {
               </div>
             </div>
 
-            <div className="bg-red-50 border-2 border-red-100 rounded-[2rem] p-8 mb-12">
+            {/* Recovery Phrase — shown only once */}
+            {recoveryPhrase && (
+              <div className="relative group mb-14">
+                <div className="absolute -inset-4 bg-gradient-to-r from-amber-500 via-slate-900 to-amber-500 rounded-[3rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-300"></div>
+                <div className="relative bg-white border-2 border-amber-100 rounded-[2.5rem] p-10 overflow-hidden shadow-sm">
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        </svg>
+                      </div>
+                      <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black">
+                        Secondary Recovery Key
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-center justify-center gap-6">
+                      <code className="text-xl sm:text-3xl font-mono font-black tracking-tight text-slate-900 bg-slate-50 px-8 py-5 rounded-2xl border border-slate-100 shadow-inner text-center leading-relaxed">
+                        {recoveryPhrase}
+                      </code>
+
+                      <button
+                        onClick={copyPhrase}
+                        className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+                          phraseCopied
+                            ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
+                            : "bg-white text-slate-900 border border-slate-200 hover:border-slate-900 shadow-sm"
+                        }`}
+                      >
+                        {phraseCopied ? (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            Copied to Vault
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            </svg>
+                            Secure Phrase
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="bg-red-50 border-2 border-red-100 rounded-[2.5rem] p-8 mb-8">
               <div className="flex items-start gap-4 text-left">
                 <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                   <svg
@@ -140,13 +243,33 @@ export function ConfirmationPage() {
                     Critical Protocol Information
                   </p>
                   <p className="text-sm text-red-900/70 font-medium">
-                    This key is your{" "}
-                    <span className="font-bold text-red-900">only</span> method
-                    of retrieval. Store it in a physical vault or secure
-                    manager. It cannot be recovered.
+                    The Tracking Key is your{" "}
+                    <span className="font-bold text-red-900">Primary Key</span>.{" "}
+                    {recoveryPhrase
+                      ? "The Recovery Phrase is shown ONLY ONCE. Secure both credentials immediately."
+                      : "It is the only method of retrieval. Store it in a secure vault."}
                   </p>
                 </div>
               </div>
+            </div>
+
+            {/* Download Credentials Button */}
+            <div className="mb-12">
+              <button
+                onClick={downloadCredentials}
+                className="group w-full bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-slate-900 text-slate-900 py-5 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
+              >
+                <svg className="w-5 h-5 text-slate-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span className="relative">
+                  Archive Credentials
+                  <div className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
+                </span>
+              </button>
+              <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.1em] text-center mt-3 opacity-60">
+                Generate Secure .TXT Archive
+              </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

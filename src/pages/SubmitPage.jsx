@@ -40,14 +40,16 @@ export function SubmitPage() {
 
       setUploadProgress("Encrypting payload...");
 
-      const { trackingId } = await createComplaint({
+      const { trackingId, recoveryPhrase } = await createComplaint({
         title: formData.title,
         description: formData.description,
         category: formData.category,
         attachments: attachments.length > 0 ? attachments : undefined,
       });
 
-      navigate(`/confirmation/${trackingId}`);
+      navigate(`/confirmation/${trackingId}`, {
+        state: { recoveryPhrase },
+      });
     } catch (err) {
       console.error("Submission failed:", err);
       setError(

@@ -1,6 +1,6 @@
 import { ComplaintCard } from "./ComplaintCard";
 
-export function ComplaintList({ complaints, onStatusChange, onNoteAdd }) {
+export function ComplaintList({ complaints, onStatusChange, onNoteAdd, onPublicMessageUpdate }) {
   if (complaints.length === 0) {
     return (
       <div className="text-center py-12 text-gray-500">
@@ -17,6 +17,7 @@ export function ComplaintList({ complaints, onStatusChange, onNoteAdd }) {
           complaint={complaint}
           onStatusChange={onStatusChange}
           onNoteAdd={onNoteAdd}
+          onPublicMessageUpdate={onPublicMessageUpdate}
         />
       ))}
     </div>

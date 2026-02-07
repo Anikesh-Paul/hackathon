@@ -6,6 +6,7 @@ import {
   listComplaints,
   updateComplaintStatus,
   addAdminNote,
+  updatePublicMessage,
 } from "../services/complaintService";
 
 export function DashboardPage() {
@@ -47,16 +48,24 @@ export function DashboardPage() {
   }
 
   async function handleStatusChange(id, status) {
-    await updateComplaintStatus(id, status);
+    const result = await updateComplaintStatus(id, status);
     setComplaints((prev) =>
       prev.map((c) => (c.id === id ? { ...c, status } : c)),
     );
+    return result;
   }
 
   async function handleNoteAdd(id, note) {
     await addAdminNote(id, note);
     setComplaints((prev) =>
       prev.map((c) => (c.id === id ? { ...c, adminNotes: note } : c)),
+    );
+  }
+
+  async function handlePublicMessageUpdate(id, message) {
+    await updatePublicMessage(id, message);
+    setComplaints((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, publicMessage: message } : c)),
     );
   }
 
@@ -163,6 +172,7 @@ export function DashboardPage() {
                 complaints={complaints}
                 onStatusChange={handleStatusChange}
                 onNoteAdd={handleNoteAdd}
+                onPublicMessageUpdate={handlePublicMessageUpdate}
               />
             </div>
           )}
