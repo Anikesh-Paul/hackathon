@@ -459,14 +459,14 @@ export function ComplaintCard({
                 </div>
 
                 {/* Admin reply input */}
-                <div className="flex gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <textarea
                     value={adminReply}
                     onFocus={() => setActiveSection("followup")}
                     onChange={(e) => setAdminReply(e.target.value)}
                     rows={2}
                     maxLength={2000}
-                    className="flex-1 rounded-2xl border-slate-100 bg-white shadow-inner focus:border-red-600 focus:ring-red-600 text-sm font-medium py-3 px-5 placeholder:text-slate-300 transition-all duration-300 resize-none"
+                    className="flex-1 w-full rounded-2xl border-slate-100 bg-white shadow-inner focus:border-red-600 focus:ring-red-600 text-sm font-medium py-3 px-5 placeholder:text-slate-300 transition-all duration-300 resize-none"
                     placeholder="Request additional intelligence..."
                   />
                   <button
@@ -489,7 +489,7 @@ export function ComplaintCard({
                       }
                     }}
                     disabled={isSavingFollowUp || !adminReply.trim()}
-                    className="self-end bg-slate-900 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-600 disabled:opacity-50 transition-all duration-300 cursor-pointer shadow-xl shadow-slate-900/10 min-w-[100px] flex items-center justify-center"
+                    className="w-full sm:w-auto sm:self-end bg-slate-900 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-600 disabled:opacity-50 transition-all duration-300 cursor-pointer shadow-xl shadow-slate-900/10 min-w-[100px] flex items-center justify-center"
                   >
                     {isSavingFollowUp ? (
                       <svg
