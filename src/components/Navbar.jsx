@@ -1,14 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 
 export function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   async function handleLogout() {
     try {
       await logout();
       navigate("/login");
+      setIsOpen(false);
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -35,7 +38,7 @@ export function Navbar() {
                   />
                 </svg>
               </div>
-              <span className="text-xl font-black tracking-tighter uppercase text-slate-900">
+              <span className="text-lg sm:text-xl font-black tracking-tighter uppercase text-slate-900">
                 Whistle<span className="text-red-600">Blower</span>
               </span>
             </Link>
@@ -95,25 +98,101 @@ export function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu button (Simplified) */}
+          {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
-            <Link to="/login" className="p-2 text-slate-400">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-xl text-slate-600 hover:bg-slate-50 transition-all duration-200"
+              aria-label="Toggle menu"
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09a2 2 0 013.496 1.447 21.437 21.437 0 014.654 1.42 2 2 0 002.332-1.318l2.736-8.122m-1.238-1.128L18.13 4.89a2 2 0 00-1.814-1.391l-3.091-.181a2 2 0 01-1.722-1.144l-1.171-2.341a2 2 0 00-3.666 1.137l.643 3.19a2 2 0 001.21 1.488A8.482 8.482 0 0110 11V11z"
-                />
+                {isOpen ? (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                ) : (
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  />
+                )}
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Content */}
+        {isOpen && (
+          <div className="sm:hidden pb-6 pt-2 animate-in slide-in-from-top-4 duration-300">
+            <div className="flex flex-col space-y-2">
+              <Link
+                to="/submit"
+                onClick={() => setIsOpen(false)}
+                className="text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200"
+              >
+                Submit Report
+              </Link>
+              <Link
+                to="/track"
+                onClick={() => setIsOpen(false)}
+                className="text-slate-600 hover:text-slate-900 hover:bg-slate-50 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200"
+              >
+                Track Status
+              </Link>
+
+              <div className="h-px bg-slate-100 mx-4 my-2" />
+
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsOpen(false)}
+                    className="bg-slate-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all duration-200"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center text-red-600 hover:bg-red-50 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200"
+                  >
+                    <svg
+                      className="w-4 h-4 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="bg-slate-900 text-white px-4 py-3 rounded-xl text-sm font-bold hover:bg-slate-800 transition-all duration-200 text-center"
+                >
+                  Investigator Login
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     </div>
   );

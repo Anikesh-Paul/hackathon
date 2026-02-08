@@ -70,7 +70,7 @@ export function SubmitPage() {
             <span className="w-2 h-2 bg-red-600 rounded-full mr-2 animate-pulse" />
             Secure Submission Portal
           </div>
-          <h1 className="text-5xl font-black tracking-tight text-slate-900 sm:text-6xl mb-6 uppercase">
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 sm:text-6xl mb-6 uppercase">
             Expose the <span className="text-red-600">Truth</span>
           </h1>
           <p className="text-lg text-slate-500 max-w-xl mx-auto leading-relaxed">
@@ -123,7 +123,7 @@ export function SubmitPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 sm:p-12 overflow-hidden relative">
+        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50" />
           <ComplaintForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
         </div>

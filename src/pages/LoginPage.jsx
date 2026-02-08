@@ -54,7 +54,7 @@ export function LoginPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-8 sm:p-12 relative overflow-hidden">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-900 to-transparent opacity-20" />
 
           {error && (
@@ -72,7 +72,7 @@ export function LoginPage() {
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                 />
               </svg>
-              <p className="font-bold text-xs uppercase tracking-wider">
+              <p className="font-bold text-[10px] sm:text-xs uppercase tracking-wider">
                 {error}
               </p>
             </div>

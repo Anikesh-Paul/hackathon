@@ -23,7 +23,15 @@ export function ConfirmationPage() {
   }
 
   function downloadCredentials() {
-    const timestamp = new Date().toLocaleString();
+    const timestamp = new Date().toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
     const lines = [
       "══════════════════════════════════════════════",
       "  WHISTLEBLOWER REPORT — SECURE CREDENTIALS  ",
@@ -50,7 +58,9 @@ export function ConfirmationPage() {
       "  This file was generated automatically.",
       "  Delete it once you have stored the credentials safely.",
       "══════════════════════════════════════════════",
-    ].filter(Boolean).join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
 
     const blob = new Blob([lines], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -76,12 +86,12 @@ export function ConfirmationPage() {
             </span>
           </div>
 
-          <div className="p-10 sm:p-20 text-center">
-            <div className="relative inline-block mb-12">
+          <div className="p-6 sm:p-20 text-center">
+            <div className="relative inline-block mb-8 sm:mb-12">
               <div className="absolute inset-0 bg-green-500/20 blur-2xl rounded-full scale-150 animate-pulse" />
-              <div className="relative w-28 h-28 bg-white border-4 border-green-500 rounded-full flex items-center justify-center mx-auto ring-8 ring-green-50">
+              <div className="relative w-20 h-20 sm:w-28 sm:h-28 bg-white border-4 border-green-500 rounded-full flex items-center justify-center mx-auto ring-8 ring-green-50">
                 <svg
-                  className="w-12 h-12 text-green-500"
+                  className="w-8 h-8 sm:w-12 sm:h-12 text-green-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -96,17 +106,17 @@ export function ConfirmationPage() {
               </div>
             </div>
 
-            <h1 className="text-5xl font-black tracking-tighter text-slate-900 mb-6 uppercase italic">
+            <h1 className="text-4xl sm:text-5xl font-black tracking-tighter text-slate-900 mb-6 uppercase italic">
               Report <span className="text-red-600">Logged</span>
             </h1>
-            <p className="text-slate-500 mb-14 leading-relaxed font-medium max-w-md mx-auto">
+            <p className="text-sm sm:text-slate-500 mb-10 sm:mb-14 leading-relaxed font-medium max-w-md mx-auto">
               Your anonymous report has been successfully ingested into our
               encrypted investigation core.
             </p>
 
-            <div className="relative group mb-14">
+            <div className="relative group mb-10 sm:mb-14">
               <div className="absolute -inset-4 bg-gradient-to-r from-red-600 via-slate-900 to-red-600 rounded-[2.5rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-300"></div>
-              <div className="relative bg-slate-50 border-2 border-slate-900 rounded-[2rem] p-10 overflow-hidden">
+              <div className="relative bg-slate-50 border-2 border-slate-900 rounded-[2rem] p-6 sm:p-10 overflow-hidden">
                 {/* ID Background text decoy */}
                 <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] text-[8px] font-mono leading-none break-all pointer-events-none select-none">
                   {Array(100).fill(trackingId).join("")}
@@ -117,7 +127,7 @@ export function ConfirmationPage() {
                     Private Tracking Key
                   </p>
                   <div className="flex flex-col items-center justify-center gap-6">
-                    <code className="text-2xl sm:text-4xl font-mono font-black tracking-tight text-slate-900 bg-white px-6 py-3 rounded-2xl border border-slate-100 shadow-sm">
+                    <code className="text-xl sm:text-4xl font-mono font-black tracking-tight text-slate-900 bg-white px-4 sm:px-6 py-3 rounded-2xl border border-slate-100 shadow-sm break-all w-full sm:w-auto">
                       {trackingId}
                     </code>
 
@@ -172,14 +182,24 @@ export function ConfirmationPage() {
 
             {/* Recovery Phrase — shown only once */}
             {recoveryPhrase && (
-              <div className="relative group mb-14">
+              <div className="relative group mb-10 sm:mb-14">
                 <div className="absolute -inset-4 bg-gradient-to-r from-amber-500 via-slate-900 to-amber-500 rounded-[3rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-300"></div>
-                <div className="relative bg-white border-2 border-amber-100 rounded-[2.5rem] p-10 overflow-hidden shadow-sm">
+                <div className="relative bg-white border-2 border-amber-100 rounded-[2.5rem] p-6 sm:p-10 overflow-hidden shadow-sm">
                   <div className="relative z-10">
                     <div className="flex items-center justify-center gap-3 mb-6">
                       <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
-                        <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                        <svg
+                          className="w-5 h-5 text-amber-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2.5"
+                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                          />
                         </svg>
                       </div>
                       <p className="text-[10px] uppercase tracking-[0.3em] text-slate-400 font-black">
@@ -187,7 +207,7 @@ export function ConfirmationPage() {
                       </p>
                     </div>
                     <div className="flex flex-col items-center justify-center gap-6">
-                      <code className="text-xl sm:text-3xl font-mono font-black tracking-tight text-slate-900 bg-slate-50 px-8 py-5 rounded-2xl border border-slate-100 shadow-inner text-center leading-relaxed">
+                      <code className="text-lg sm:text-3xl font-mono font-black tracking-tight text-slate-900 bg-slate-50 px-4 sm:px-8 py-4 sm:py-5 rounded-2xl border border-slate-100 shadow-inner text-center leading-relaxed break-words w-full sm:w-auto">
                         {recoveryPhrase}
                       </code>
 
@@ -201,15 +221,35 @@ export function ConfirmationPage() {
                       >
                         {phraseCopied ? (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="3"
+                                d="M5 13l4 4L19 7"
+                              />
                             </svg>
                             Copied to Vault
                           </>
                         ) : (
                           <>
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2.5"
+                                d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                              />
                             </svg>
                             Secure Phrase
                           </>
@@ -259,8 +299,18 @@ export function ConfirmationPage() {
                 onClick={downloadCredentials}
                 className="group w-full bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-slate-900 text-slate-900 py-5 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
               >
-                <svg className="w-5 h-5 text-slate-400 group-hover:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="w-5 h-5 text-slate-400 group-hover:text-red-600 transition-colors"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 <span className="relative">
                   Archive Credentials

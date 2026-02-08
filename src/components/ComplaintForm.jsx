@@ -32,7 +32,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
       const isPdf = file.type === "application/pdf";
       const isAudio = file.type === "audio/mpeg";
       const isVideo = file.type === "video/mp4";
-      
+
       // Type Check
       if (!isImage && !isPdf && !isAudio && !isVideo) {
         rejectedDetails.push(`'${file.name}' (unsupported type)`);
@@ -50,20 +50,27 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
 
     // Handle rejections first so the user knows why some files didn't appear
     if (rejectedDetails.length > 0) {
-      setLocalError(`REJECTED: ${rejectedDetails.join(", ")}. Please upload smaller files (max 5MB) in supported formats.`);
+      setLocalError(
+        `REJECTED: ${rejectedDetails.join(", ")}. Please upload smaller files (max 5MB) in supported formats.`,
+      );
     }
 
     // Check for total capacity
     const totalPossible = selectedFiles.length + validNewFiles.length;
     if (totalPossible > MAX_FILES) {
-      setLocalError(`Maximum ${MAX_FILES} files allowed. Some valid items were not added.`);
-      
+      setLocalError(
+        `Maximum ${MAX_FILES} files allowed. Some valid items were not added.`,
+      );
+
       const availableSpots = MAX_FILES - selectedFiles.length;
       if (availableSpots > 0) {
-        setSelectedFiles(prev => [...prev, ...validNewFiles.slice(0, availableSpots)]);
+        setSelectedFiles((prev) => [
+          ...prev,
+          ...validNewFiles.slice(0, availableSpots),
+        ]);
       }
     } else if (validNewFiles.length > 0) {
-      setSelectedFiles(prev => [...prev, ...validNewFiles]);
+      setSelectedFiles((prev) => [...prev, ...validNewFiles]);
     }
 
     // Clear input so same file can be selected again if removed
@@ -115,8 +122,18 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
     <form onSubmit={handleSubmit} className="space-y-10">
       {localError && (
         <div className="p-4 bg-red-50 border border-red-100 text-red-700 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] animate-shake flex items-center gap-3">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="3"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
           Protocol Breach: {localError}
         </div>
@@ -230,7 +247,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
             accept="image/*,.pdf,audio/mpeg,video/mp4"
             multiple
             onChange={handleFileChange}
-            className="block w-full rounded-2xl border-slate-100 bg-slate-50 shadow-inner focus:border-red-600 focus:ring-red-600 focus:bg-white transition-all duration-300 py-4 px-6 text-slate-900 font-medium file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-slate-900 file:text-white file:cursor-pointer hover:file:bg-red-600 file:transition-colors"
+            className="block w-full rounded-2xl border-slate-100 bg-slate-50 shadow-inner focus:border-red-600 focus:ring-red-600 focus:bg-white transition-all duration-300 py-3 sm:py-4 px-4 sm:px-6 text-slate-900 font-medium file:mr-2 sm:file:mr-4 file:py-2 file:px-3 sm:file:px-4 file:rounded-xl file:border-0 file:text-[10px] sm:file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-slate-900 file:text-white file:cursor-pointer hover:file:bg-red-600 file:transition-colors"
           />
         </div>
         {selectedFiles.length > 0 && (
@@ -251,8 +268,12 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
                 >
                   <div className="flex items-center gap-2">
                     {isPdf || isAudio || isVideo ? (
-                      <svg className={`w-4 h-4 ${isPdf ? 'text-red-600' : isAudio ? 'text-blue-600' : 'text-purple-600'}`} fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                      <svg
+                        className={`w-4 h-4 ${isPdf ? "text-red-600" : isAudio ? "text-blue-600" : "text-purple-600"}`}
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
                       </svg>
                     ) : (
                       <svg
