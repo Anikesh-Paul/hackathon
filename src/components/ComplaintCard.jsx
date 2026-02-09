@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { StatusBadge } from "./StatusBadge";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { getFilePreviewUrl, getFileViewUrl } from "../services/storageService";
 import {
   getStatusHistory,
@@ -25,6 +27,7 @@ export function ComplaintCard({
   const [followUps, setFollowUps] = useState([]);
   const [followUpsLoaded, setFollowUpsLoaded] = useState(false);
   const [adminReply, setAdminReply] = useState("");
+  const contentRef = useRef();
 
   // Independent saving states
   const [isSavingStatus, setIsSavingStatus] = useState(false);
@@ -34,6 +37,21 @@ export function ComplaintCard({
 
   // Focus tracking for specialized animations
   const [activeSection, setActiveSection] = useState(null); // 'public', 'note', 'followup'
+
+  useGSAP(
+    () => {
+      if (expanded && contentRef.current) {
+        gsap.from(contentRef.current, {
+          height: 0,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.out",
+          clearProps: "all",
+        });
+      }
+    },
+    { dependencies: [expanded] },
+  );
 
   // Lazy-load status history when card is expanded
   useEffect(() => {

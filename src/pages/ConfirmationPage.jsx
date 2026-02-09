@@ -1,5 +1,9 @@
 import { useParams, Link, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import {
+  useEntranceAnimation,
+  animateButtonPress,
+} from "../hooks/useAnimations";
 
 export function ConfirmationPage() {
   const { trackingId } = useParams();
@@ -7,6 +11,9 @@ export function ConfirmationPage() {
   const recoveryPhrase = location.state?.recoveryPhrase || null;
   const [copied, setCopied] = useState(false);
   const [phraseCopied, setPhraseCopied] = useState(false);
+  const container = useRef();
+
+  useEntranceAnimation(container);
 
   function copyToClipboard() {
     navigator.clipboard.writeText(trackingId);
@@ -74,19 +81,22 @@ export function ConfirmationPage() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-6rem)] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8">
+    <div
+      className="min-h-[calc(100vh-6rem)] flex items-center justify-center py-20 px-4 sm:px-6 lg:px-8"
+      ref={container}
+    >
       <div className="max-w-2xl w-full">
         {/* Decorative background elements */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-full max-w-4xl h-96 bg-red-500/5 blur-[120px] rounded-full" />
 
-        <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+        <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden animate-entrance">
           <div className="bg-slate-900 py-4 px-6 text-center">
             <span className="text-white text-[10px] font-black uppercase tracking-[0.4em]">
               Signal Confirmed • Transmission Complete
             </span>
           </div>
 
-          <div className="p-6 sm:p-20 text-center">
+          <div className="p-6 sm:p-20 text-center animate-entrance">
             <div className="relative inline-block mb-8 sm:mb-12">
               <div className="absolute inset-0 bg-green-500/20 blur-2xl rounded-full scale-150 animate-pulse" />
               <div className="relative w-20 h-20 sm:w-28 sm:h-28 bg-white border-4 border-green-500 rounded-full flex items-center justify-center mx-auto ring-8 ring-green-50">
@@ -114,7 +124,7 @@ export function ConfirmationPage() {
               encrypted investigation core.
             </p>
 
-            <div className="relative group mb-10 sm:mb-14">
+            <div className="relative group mb-10 sm:mb-14 animate-entrance">
               <div className="absolute -inset-4 bg-gradient-to-r from-red-600 via-slate-900 to-red-600 rounded-[2.5rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-300"></div>
               <div className="relative bg-slate-50 border-2 border-slate-900 rounded-[2rem] p-6 sm:p-10 overflow-hidden">
                 {/* ID Background text decoy */}
@@ -132,6 +142,8 @@ export function ConfirmationPage() {
                     </code>
 
                     <button
+                      id="copy-btn"
+                      onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                       onClick={copyToClipboard}
                       className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                         copied
@@ -182,7 +194,7 @@ export function ConfirmationPage() {
 
             {/* Recovery Phrase — shown only once */}
             {recoveryPhrase && (
-              <div className="relative group mb-10 sm:mb-14">
+              <div className="relative group mb-10 sm:mb-14 animate-entrance">
                 <div className="absolute -inset-4 bg-gradient-to-r from-amber-500 via-slate-900 to-amber-500 rounded-[3rem] blur-xl opacity-10 group-hover:opacity-20 transition duration-1000 group-hover:duration-300"></div>
                 <div className="relative bg-white border-2 border-amber-100 rounded-[2.5rem] p-6 sm:p-10 overflow-hidden shadow-sm">
                   <div className="relative z-10">
@@ -212,7 +224,9 @@ export function ConfirmationPage() {
                       </code>
 
                       <button
+                        onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                         onClick={copyPhrase}
+                        id="phrase-btn"
                         className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                           phraseCopied
                             ? "bg-green-500 text-white shadow-lg shadow-green-500/20"
@@ -261,7 +275,7 @@ export function ConfirmationPage() {
               </div>
             )}
 
-            <div className="bg-red-50 border-2 border-red-100 rounded-[2.5rem] p-8 mb-8">
+            <div className="bg-red-50 border-2 border-red-100 rounded-[2.5rem] p-8 mb-8 animate-entrance">
               <div className="flex items-start gap-4 text-left">
                 <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
                   <svg
@@ -294,8 +308,9 @@ export function ConfirmationPage() {
             </div>
 
             {/* Download Credentials Button */}
-            <div className="mb-12">
+            <div className="mb-12 animate-entrance">
               <button
+                onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                 onClick={downloadCredentials}
                 className="group w-full bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-slate-900 text-slate-900 py-5 px-8 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer shadow-sm"
               >
@@ -322,9 +337,10 @@ export function ConfirmationPage() {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-entrance">
               <Link
                 to="/track"
+                onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                 className="group relative bg-slate-900 text-white py-5 px-10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl shadow-slate-900/20 hover:shadow-slate-900/40 transition-all duration-300"
               >
                 <div className="absolute inset-0 w-0 bg-red-600 transition-all duration-500 group-hover:w-full rounded-2xl" />
@@ -332,6 +348,7 @@ export function ConfirmationPage() {
               </Link>
               <Link
                 to="/submit"
+                onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                 className="bg-white border-2 border-slate-900 text-slate-900 py-5 px-10 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-50 transition-all duration-300"
               >
                 Log New Report

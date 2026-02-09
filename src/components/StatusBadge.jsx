@@ -1,3 +1,7 @@
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { animateStatusChange } from "../hooks/useAnimations";
+
 const STATUS_CONFIG = {
   pending: {
     label: "Under Review",
@@ -24,9 +28,20 @@ const STATUS_CONFIG = {
 
 export function StatusBadge({ status }) {
   const config = STATUS_CONFIG[status] || STATUS_CONFIG.pending;
+  const badgeRef = useRef();
+
+  useGSAP(
+    () => {
+      if (badgeRef.current) {
+        animateStatusChange(badgeRef.current);
+      }
+    },
+    { dependencies: [status] },
+  );
 
   return (
     <div
+      ref={badgeRef}
       className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-[0.15em] shadow-sm transition-all duration-300 ${config.color}`}
     >
       <svg

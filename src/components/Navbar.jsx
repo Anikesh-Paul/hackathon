@@ -1,11 +1,28 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 export function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const mobileMenuRef = useRef();
+
+  useGSAP(
+    () => {
+      if (isOpen && mobileMenuRef.current) {
+        gsap.from(mobileMenuRef.current, {
+          height: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+    },
+    { dependencies: [isOpen] },
+  );
 
   async function handleLogout() {
     try {
@@ -133,7 +150,10 @@ export function Navbar() {
 
         {/* Mobile Menu Content */}
         {isOpen && (
-          <div className="sm:hidden pb-6 pt-2 animate-in slide-in-from-top-4 duration-300">
+          <div
+            ref={mobileMenuRef}
+            className="sm:hidden pb-6 pt-2 overflow-hidden"
+          >
             <div className="flex flex-col space-y-2">
               <Link
                 to="/submit"

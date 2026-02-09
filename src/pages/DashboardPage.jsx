@@ -1,7 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { ComplaintList } from "../components/ComplaintList";
+import {
+  useEntranceAnimation,
+  animateFilterSwitch,
+} from "../hooks/useAnimations";
+import { useGSAP } from "@gsap/react";
 import {
   listComplaints,
   updateComplaintStatus,
@@ -16,6 +21,19 @@ export function DashboardPage() {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const container = useRef();
+  const listRef = useRef();
+
+  useEntranceAnimation(container);
+
+  useGSAP(
+    () => {
+      if (!loading && listRef.current) {
+        animateFilterSwitch(listRef);
+      }
+    },
+    { dependencies: [statusFilter, loading], scope: container },
+  );
 
   // Compute filtered complaints based on status
   const filteredComplaints = useMemo(() => {
@@ -77,9 +95,9 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-4 sm:px-6 lg:px-8" ref={container}>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-8 animate-entrance">
           <div className="space-y-4">
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-[0.3em]">
               <span className="w-2 h-2 bg-red-600 rounded-full mr-2 shadow-[0_0_8px_rgba(220,38,38,0.8)] animate-pulse" />
@@ -123,7 +141,7 @@ export function DashboardPage() {
             ].map((stat, i) => (
               <div
                 key={i}
-                className={`${stat.bg} rounded-[2rem] border border-slate-100 p-5 sm:p-8 flex flex-col justify-center items-center text-center group hover:scale-[1.02] transition-all duration-300`}
+                className={`${stat.bg} rounded-[2rem] border border-slate-100 p-5 sm:p-8 flex flex-col justify-center items-center text-center group hover:scale-[1.02] transition-all duration-300 animate-entrance`}
               >
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-4">
                   {stat.label}
@@ -139,7 +157,7 @@ export function DashboardPage() {
         </div>
 
         {error && (
-          <div className="mb-8 p-6 bg-red-50 border border-red-100 text-red-700 rounded-3xl flex items-center shadow-sm animate-shake">
+          <div className="mb-8 p-6 bg-red-50 border border-red-100 text-red-700 rounded-3xl flex items-center shadow-sm animate-shake animate-entrance">
             <svg
               className="w-6 h-6 mr-4 flex-shrink-0"
               fill="none"
@@ -159,7 +177,7 @@ export function DashboardPage() {
           </div>
         )}
 
-        <div className="space-y-6 pb-20">
+        <div className="space-y-6 pb-20 animate-entrance">
           {loading ? (
             <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-20" />
@@ -174,7 +192,7 @@ export function DashboardPage() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 gap-8" ref={listRef}>
               <ComplaintList
                 complaints={filteredComplaints}
                 onStatusChange={handleStatusChange}

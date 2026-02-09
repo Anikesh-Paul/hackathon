@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ComplaintForm } from "../components/ComplaintForm";
 import { createComplaint } from "../services/complaintService";
 import { uploadFiles } from "../services/storageService";
+import { useEntranceAnimation } from "../hooks/useAnimations";
 
 export function SubmitPage() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState("");
   const [error, setError] = useState(null);
+  const container = useRef();
+
+  useEntranceAnimation(container);
 
   async function handleSubmit(formData) {
     if (isSubmitting) return;
@@ -63,9 +67,9 @@ export function SubmitPage() {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-4 sm:px-6 lg:px-8" ref={container}>
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-entrance">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-widest mb-6">
             <span className="w-2 h-2 bg-red-600 rounded-full mr-2 animate-pulse" />
             Secure Submission Portal
@@ -80,7 +84,7 @@ export function SubmitPage() {
         </div>
 
         {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl flex items-center shadow-sm animate-shake">
+          <div className="mb-8 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl flex items-center shadow-sm animate-shake animate-entrance">
             <svg
               className="w-5 h-5 mr-3 flex-shrink-0"
               fill="none"
@@ -99,7 +103,7 @@ export function SubmitPage() {
         )}
 
         {uploadProgress && (
-          <div className="mb-8 p-4 bg-blue-50 border border-blue-100 text-blue-700 rounded-2xl flex items-center shadow-sm">
+          <div className="mb-8 p-4 bg-blue-50 border border-blue-100 text-blue-700 rounded-2xl flex items-center shadow-sm animate-entrance">
             <svg
               className="animate-spin w-5 h-5 mr-3 flex-shrink-0"
               fill="none"
@@ -123,7 +127,7 @@ export function SubmitPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 overflow-hidden relative">
+        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 overflow-hidden relative animate-entrance">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50" />
           <ComplaintForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
         </div>
@@ -146,7 +150,7 @@ export function SubmitPage() {
               icon: "M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09a2 2 0 013.496 1.447 21.437 21.437 0 014.654 1.42 2 2 0 002.332-1.318l2.736-8.122",
             },
           ].map((feature, i) => (
-            <div key={i} className="text-center group">
+            <div key={i} className="text-center group animate-entrance">
               <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-slate-100 transition-colors duration-300">
                 <svg
                   className="w-6 h-6 text-slate-400 group-hover:text-slate-900 transition-colors"

@@ -8,12 +8,22 @@ import {
 } from "../services/complaintService";
 import { getFilePreviewUrl, getFileViewUrl } from "../services/storageService";
 import { StatusBadge } from "../components/StatusBadge";
+import {
+  useEntranceAnimation,
+  useStaggerReveal,
+  animateButtonPress,
+} from "../hooks/useAnimations";
 
 export function TrackStatusPage() {
   const [trackingId, setTrackingId] = useState("");
   const [complaint, setComplaint] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const container = useRef();
+  const timelineRef = useRef();
+
+  useEntranceAnimation(container);
+  useStaggerReveal(timelineRef, ".timeline-step", 0.1, [complaint]);
 
   // Recovery mode
   const [recoveryMode, setRecoveryMode] = useState(false);
@@ -102,9 +112,9 @@ export function TrackStatusPage() {
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
+    <div className="px-4 sm:px-6 lg:px-8" ref={container}>
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-entrance">
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-widest mb-6">
             <svg
               className="w-4 h-4 mr-2"
@@ -130,7 +140,7 @@ export function TrackStatusPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 mb-12 relative overflow-hidden">
+        <div className="bg-white rounded-[2rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 mb-12 relative overflow-hidden animate-entrance">
           <div className="absolute top-0 right-0 p-8 opacity-5">
             <svg
               className="w-32 h-32 text-slate-900"
@@ -173,6 +183,7 @@ export function TrackStatusPage() {
             <button
               type="submit"
               disabled={isLoading}
+              onMouseDown={(e) => animateButtonPress(e.currentTarget)}
               className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-bold uppercase tracking-[0.2em] hover:bg-slate-800 disabled:opacity-50 transition-all duration-300 shadow-xl shadow-slate-900/20 flex items-center justify-center min-w-[160px] cursor-pointer"
             >
               {isLoading ? (
@@ -203,7 +214,7 @@ export function TrackStatusPage() {
         </div>
 
         {/* Recovery Phrase Toggle & Form */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-entrance">
           <button
             type="button"
             onClick={() => {
@@ -276,6 +287,7 @@ export function TrackStatusPage() {
               <button
                 type="submit"
                 disabled={recoveryLoading}
+                onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                 className="group relative bg-slate-900 text-white px-8 py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-slate-800 disabled:opacity-50 transition-all duration-300 shadow-xl shadow-slate-900/20 flex items-center justify-center min-w-[140px] cursor-pointer overflow-hidden"
               >
                 <div className="absolute inset-0 w-0 bg-red-600 transition-all duration-[400ms] group-hover:w-full" />
@@ -550,7 +562,7 @@ export function TrackStatusPage() {
                     </h3>
                     {complaint.statusHistory &&
                     complaint.statusHistory.length > 0 ? (
-                      <div className="relative pl-6">
+                      <div className="relative pl-6" ref={timelineRef}>
                         <div className="absolute left-[7px] top-2 bottom-2 w-0.5 bg-slate-200" />
                         {complaint.statusHistory.map((entry, idx) => {
                           const isLatest =
@@ -561,14 +573,11 @@ export function TrackStatusPage() {
                             resolved: "bg-emerald-500",
                             dismissed: "bg-slate-400",
                           };
-                          const iconColors = {
-                            pending: "bg-amber-50 text-amber-600",
-                            reviewing: "bg-blue-50 text-blue-600",
-                            resolved: "bg-green-50 text-green-600",
-                            dismissed: "bg-red-50 text-red-600",
-                          };
                           return (
-                            <div key={idx} className="relative mb-6 last:mb-0">
+                            <div
+                              key={idx}
+                              className="relative mb-6 last:mb-0 timeline-step"
+                            >
                               <div
                                 className={`absolute -left-6 top-1 w-3.5 h-3.5 rounded-full border-2 border-white ${colors[entry.status] || "bg-slate-400"} ${isLatest ? "ring-4 ring-slate-100" : ""}`}
                               />
@@ -817,6 +826,7 @@ export function TrackStatusPage() {
                       }
                     />
                     <button
+                      onMouseDown={(e) => animateButtonPress(e.currentTarget)}
                       onClick={async () => {
                         if (
                           !replyText.trim() ||

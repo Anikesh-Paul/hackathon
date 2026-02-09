@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { animateButtonPress } from "../hooks/useAnimations";
 
 const CATEGORIES = ["harassment", "fraud", "safety", "misconduct", "other"];
 const MAX_FILES = 3;
@@ -327,6 +328,7 @@ export function ComplaintForm({ onSubmit, isSubmitting }) {
         <button
           type="submit"
           disabled={isSubmitting}
+          onMouseDown={(e) => animateButtonPress(e.currentTarget)}
           className="group relative w-full overflow-hidden rounded-2xl bg-slate-900 px-8 py-5 font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <div className="absolute inset-0 w-0 bg-red-600 transition-all duration-[400ms] group-hover:w-full" />

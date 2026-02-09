@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import {
+  useEntranceAnimation,
+  animateButtonPress,
+} from "../hooks/useAnimations";
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -9,6 +13,9 @@ export function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const container = useRef();
+
+  useEntranceAnimation(container);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -27,9 +34,12 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center px-4 py-20">
+    <div
+      className="flex items-center justify-center px-4 py-20"
+      ref={container}
+    >
       <div className="max-w-md w-full">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 animate-entrance">
           <div className="w-20 h-20 bg-slate-900 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-slate-900/40 relative group overflow-hidden">
             <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             <svg
@@ -54,11 +64,11 @@ export function LoginPage() {
           </p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 relative overflow-hidden">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-slate-100 p-6 sm:p-12 relative overflow-hidden animate-entrance">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-slate-900 to-transparent opacity-20" />
 
           {error && (
-            <div className="mb-8 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl flex items-center shadow-sm animate-shake">
+            <div className="mb-8 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl flex items-center shadow-sm animate-shake animate-entrance">
               <svg
                 className="w-5 h-5 mr-3 flex-shrink-0"
                 fill="none"
@@ -152,7 +162,8 @@ export function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-slate-900 text-white py-5 px-6 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-xl shadow-slate-900/20 active:translate-y-1 cursor-pointer"
+              onMouseDown={(e) => animateButtonPress(e.currentTarget)}
+              className="w-full bg-slate-900 text-white py-5 px-6 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-xl shadow-slate-900/20 cursor-pointer"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center">
